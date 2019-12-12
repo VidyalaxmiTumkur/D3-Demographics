@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Line Graph</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+</head>
+<style>
+    svg {
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+    }
+
+    body {
+        font: 10px Arial;
+    }
+
+    .axis path,
+    .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+    }
+
+    .x.axis path {
+        display: none;
+    }
+
+    .line {
+        fill: none;
+        stroke: Maroon;
+        stroke-width: 2px;
+    }
+</style>
+<body>
+<nav class='pink'>
+    <div class="nav-wrapper">
+        <a href="piechart.html" class="brand-logo">Final Project</a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+            <li><a href="piechart.html">Language Count</a></li>
+            <li><a href="revenue.html">Revenue Growth</a></li>
+            <li><a href="linegraph.html">Energy Consumption</a></li>
+            <li><a href="map.html">Density</a></li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container"></div>
+<script>
+    var margin = {top: 30, right: 90, bottom: 40, left: 60},
+        width = 750 - margin.left - margin.right,
+        height = 650 - margin.top - margin.bottom;
+
+    var parseDate = d3.time.format("%Y").parse;
+
+    var x = d3.time.scale()
+        .range([0, width]);
+
+    var y = d3.scale.linear()
+        .range([height, 0]);
+
+    var color = d3.scale.category10();
+
+    var xAxis = d3.svg.axis()
+        .scale(x)
+        .orient("bottom");
+
+    var yAxis = d3.svg.axis()
+        .scale(y)
+        .orient("left");
+
+    var line = d3.svg.line()
+        .interpolate("")
+
+        .x(function(d) { return x(d.year); })
+        .y(function(d) { return y(d.economic_data); });
+
+    var svg = d3.select(".container").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    d3.csv("country.csv", function(error, data) {
+        color.domain(d3.keys(data[0]).filter(function(key) { return key !== "year"; }));
+
+        data.forEach(function(d) {
+            d.year = parseDate(d.year);
+        });
+
+        var countries = color.domain().map(function(name) {
+            return {
+                name: name,
+                values: data.map(function(d) {
+                    return {year: d.year, economic_data: +d[name]};
+                })
+            };
+        });
+
+        x.domain(d3.extent(data, function(d) { return d.year; }));
+
+        y.domain([
+            d3.min(countries, function(c) { return d3.min(c.values, function(v) { return v.economic_data; }); }),
+            d3.max(countries, function(c) { return d3.max(c.values, function(v) { return v.economic_data; }); })
+        ]);
+
+        svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + height + ")")
+            .call(xAxis)
+            .append("text")
+            .attr("transform", "rotate(0)")
+            .attr("x", width + 80)
+            .attr("dy", ".71em")
+            .style("text-anchor", "end")
+            .text("Year");
+
+        svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis)
+
+            .append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("x", -230)
+            .attr("y", -40)
+            .style("text-anchor", "middle")
+            .text("Million BTUs Per Person");
+
+        var city = svg.selectAll(".city")
+            .data(countries)
+            .enter()
+            .append("g")
+            .attr("class", "city");
+
+        var path =  city.append("path")
+            .attr("class", "line")
+            .attr("d", function(d) { return line(d.values); })
+            .style("stroke", function(d) { return color(d.name); });
+
+
+         var totalLength = path.node().getTotalLength();
+
+        path
+            .attr("stroke-dasharray", totalLength + " " + totalLength)
+            .attr("stroke-dashoffset", totalLength)
+            .transition()
+            .duration(4000)
+            .ease("linear")
+            .attr("stroke-dashoffset", 0);
+
+        city.append("text")
+            .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
+            .attr("transform", function(d) { return "translate(" + x(d.value.year) + "," + y(d.value.economic_data) + ")"; })
+            .attr("x", 3)
+            .attr("dy", ".100em")
+            .text(function(d) { return d.name; });
+    });
+
+</script>
+</body>
+</html>

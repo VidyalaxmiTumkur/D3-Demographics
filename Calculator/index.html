@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Calculator</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" media="screen" href="style.css" />
+        
+    </head>
+<body>
+  <div class="container">
+    <header>JAVASCRIPT CALCULATOR</header>
+    <div class="screen">
+      <h1 id="mainScreen">0</h1>
+    </div>
+    <table>
+      <tr>
+        <td><button value="7" id="7" onclick="InputSymbol(7)">7</button></td>
+        <td><button value="8" id="8" onclick="InputSymbol(8)">8</button></td>
+        <td><button value="9" id="9" onclick="InputSymbol(9)">9</button></td>
+        <td><button onclick="DeleteLastSymbol()">c</button></td>
+      </tr>
+      <tr>
+        <td><button value="4" id="4" onclick="InputSymbol(4)">4</button></td>
+        <td><button value="5" id="5" onclick="InputSymbol(5)">5</button></td>
+        <td><button value="6" id="6" onclick="InputSymbol(6)">6</button></td>
+        <td><button value="/" id="104" onclick="InputSymbol(104)">/</button></td>
+      </tr>
+      <tr>
+        <td><button value="1" id="1" onclick="InputSymbol(1)">1</button></td>
+        <td><button value="2" id="2" onclick="InputSymbol(2)">2</button></td>
+        <td><button value="3" id="3" onclick="InputSymbol(3)">3</button></td>
+        <td><button value="*" id="103" onclick="InputSymbol(103)">*</button></td>
+      </tr>
+      <tr>
+        <td><button value="0" id="0" onclick="InputSymbol(0)">0</button></td>
+        <td><button value="." id="105" onclick="InputSymbol(105)">.</button></td>
+        <td><button value="-" id="102" onclick="InputSymbol(102)">-</button></td>
+        <td><button value="+" id="101" onclick="InputSymbol(101)">+</button></td>
+      </tr>
+      <tr>
+        <td><button value="√" id="106" onclick="sqrt()">√ </button></td>
+        <td><button value="%" id="107" onclick="InputSymbol(107)">%</button></td>
+        <td><button value="^" id="108" onclick="exp()">x^</button></td>
+        <td><button value="ln" id="109" onclick="ln()">ln</button></td>
+      </tr>
+      <tr>
+          <td><button value="sin" id="110" onclick="sin()">sin</button></td>
+          <td><button value="cos" id="111" onclick="cos()">cos</button></td>
+          <td><button value="tan" id="112" onclick="tan()">tan</button></td>
+          <td><button value="	&piv;" id="113" onclick="pi()"> Π</button></td>
+        </tr>
+      <tr>
+        <td colspan="2"><button onclick="ClearScreen()">clear</button></td>
+        <td colspan="2"><button onclick="CalculateTotal()">=</button></td>
+      </tr>
+    </table>
+  </div>
+</body>
+<script src="calculator.js"></script>
+
+</html>
